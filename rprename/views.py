@@ -49,12 +49,17 @@ class Window(QWidget, Ui_Window):
         self._thread.started.connect(self._renamer.renameFiles)
         # Update state
         self._renamer.renamedFile.connect(self._updateStateWhenFileRenamed)
+        self._renamer.progressed.connect(self._updateProgressBar)
         # Clean up
         self._renamer.finished.connect(self._thread.quit)
         self._renamer.finished.connect(self._renamer.deleteLater)
         self._thread.finished.connect(self._thread.deleteLater)
         # Run the thread
         self._thread.start()
+
+    def _updateProgressBar(self, fileNumber):
+        progressPercent = int(fileNumber / self._filesCount * 100)
+        self.pgBar.setValue(progressPercent)
 
     def _updateStateWhenFileRenamed(self, newFile):
         self._files.popleft()
