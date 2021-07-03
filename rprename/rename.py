@@ -10,11 +10,13 @@ class Renamer(QObject):
     renamedFile = pyqtSignal(Path)
     finished = pyqtSignal()
 
-    def __init__(self, files, prefix, postfix):
+    def __init__(self, files, prefix, postfix, replace, by):
         super().__init__()
         self._files = files
         self._prefix = prefix
         self._postfix = postfix
+        self._replace = replace
+        self._by = by
 
     def buildNewFileName(self, file, fileNumber):
         newFileName = ""
@@ -22,6 +24,11 @@ class Renamer(QObject):
         if self._prefix:
             newFileName += self._prefix
         #newFileName += file.stem + str(fileNumber)
+        newFileName += file.stem
+
+        if self._replace:
+            newFileName = newFileName.replace(self._replace, self._by)
+
         if self._postfix:
             newFileName += self._postfix
         newFileName += file.suffix
