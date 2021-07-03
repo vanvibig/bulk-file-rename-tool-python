@@ -10,16 +10,28 @@ class Renamer(QObject):
     renamedFile = pyqtSignal(Path)
     finished = pyqtSignal()
 
-    def __init__(self, files, prefix):
+    def __init__(self, files, prefix, postfix):
         super().__init__()
         self._files = files
         self._prefix = prefix
+        self._postfix = postfix
+
+    def buildNewFileName(self, file, fileNumber):
+        newFileName = ""
+
+        if self._prefix:
+            newFileName += self._prefix
+        #newFileName += file.stem + str(fileNumber)
+        if self._postfix:
+            newFileName += self._postfix
+        newFileName += file.suffix
+
+        return file.parent.joinpath(newFileName)
 
     def renameFiles(self):
         for fileNumber, file in enumerate(self._files, 1):
-            newFile = file.parent.joinpath(
-                f"{self._prefix}{file.stem}{str(fileNumber)}{file.suffix}"
-            )
+            # newFile = file.parent.joinpath(f"{self._prefix}{file.stem}{str(fileNumber)}{file.suffix}")
+            newFile = self.buildNewFileName(file, fileNumber)
             file.rename(newFile)
             time.sleep(0.1)  # Comment this line to rename files faster.
             self.progressed.emit(fileNumber)
