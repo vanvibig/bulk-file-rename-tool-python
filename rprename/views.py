@@ -1,8 +1,10 @@
 from collections import deque
 from pathlib import Path
 
+from PyQt5.QtCore import QThread
 from PyQt5.QtWidgets import QFileDialog, QWidget
 
+from .rename import Renamer
 from .ui.window import Ui_Window
 
 FILTERS = ";;".join(
@@ -30,6 +32,34 @@ class Window(QWidget, Ui_Window):
 
     def _connectSignalsSlots(self):
         self.loadFilesButton.clicked.connect(self.loadFiles)
+        self.renameFilesButton.clicked.connect(self.renameFiles)
+
+    def renameFiles(self):
+        self._runRenamerThread()
+
+    def _runRenamerThread(self):
+        prefix = self.txtPrefix.text()
+        self._thread = QThread()
+        self._renamer = Renamer(
+            files=tuple(self._files),
+            prefix=prefix,
+        )
+        self._renamer.moveToThread(self._thread)
+        # Rename
+        self._thread.started.connect(self._renamer.renameFiles)
+        # Update state
+        self._renamer.renamedFile.connect(self._updateStateWhenFileRenamed)
+        # Clean up
+        self._renamer.finished.connect(self._thread.quit)
+        self._renamer.finished.connect(self._renamer.deleteLater)
+        self._thread.finished.connect(self._thread.deleteLater)
+        # Run the thread
+        self._thread.start()
+
+    def _updateStateWhenFileRenamed(self, newFile):
+        self._files.popleft()
+        self.srcFileList.takeItem(0)
+        self.dstFileList.addItem(str(newFile))
 
     def loadFiles(self):
         self.dstFileList.clear()
@@ -42,7 +72,7 @@ class Window(QWidget, Ui_Window):
         )
         if len(files) > 0:
             fileExtension = filter[filter.index("*"): -1]
-            self.extensionLabel.setText(fileExtension)
+            self.txtExtension.setText(fileExtension)
             srcDirName = str(Path(files[0]).parent)
             self.dirEdit.setText(srcDirName)
             for file in files:
