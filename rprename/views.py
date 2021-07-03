@@ -29,13 +29,35 @@ class Window(QWidget, Ui_Window):
 
     def _setupUI(self):
         self.setupUi(self)
+        self._updateStateWhenNoFiles()
+
+    def _updateStateWhenNoFiles(self):
+        self._filesCount = len(self._files)
+        self.loadFilesButton.setEnabled(True)
+        self.loadFilesButton.setFocus(True)
+        self.renameFilesButton.setEnabled(False)
+        self.txtPrefix.clear()
+        self.txtPrefix.setEnabled(False)
 
     def _connectSignalsSlots(self):
         self.loadFilesButton.clicked.connect(self.loadFiles)
         self.renameFilesButton.clicked.connect(self.renameFiles)
 
+        self.txtPrefix.textChanged.connect(self._updateStateWhenReady)
+
+    def _updateStateWhenReady(self):
+        if self.txtPrefix.text():
+            self.renameFilesButton.setEnabled(True)
+        else:
+            self.renameFilesButton.setEnabled(False)
+
     def renameFiles(self):
         self._runRenamerThread()
+        self._updateStateWhileRenaming()
+
+    def _updateStateWhileRenaming(self):
+        self.loadFilesButton.setEnabled(False)
+        self.renameFilesButton.setEnabled(False)
 
     def _runRenamerThread(self):
         prefix = self.txtPrefix.text()
@@ -50,6 +72,7 @@ class Window(QWidget, Ui_Window):
         # Update state
         self._renamer.renamedFile.connect(self._updateStateWhenFileRenamed)
         self._renamer.progressed.connect(self._updateProgressBar)
+        self._renamer.finished.connect(self._updateStateWhenNoFiles)
         # Clean up
         self._renamer.finished.connect(self._thread.quit)
         self._renamer.finished.connect(self._renamer.deleteLater)
@@ -84,3 +107,9 @@ class Window(QWidget, Ui_Window):
                 self._files.append(Path(file))
                 self.srcFileList.addItem(file)
             self._filesCount = len(self._files)
+
+            self._updateStateWhenFilesLoaded()
+
+    def _updateStateWhenFilesLoaded(self):
+        self.txtPrefix.setEnabled(True)
+        self.txtPrefix.setFocus(True)
