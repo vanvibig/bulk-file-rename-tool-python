@@ -1,3 +1,4 @@
+import re
 import time
 from pathlib import Path
 
@@ -10,21 +11,26 @@ class Renamer(QObject):
     renamedFile = pyqtSignal(Path)
     finished = pyqtSignal()
 
-    def __init__(self, files, prefix, postfix, replace, by):
+    def __init__(self, files, prefix, postfix, replace, by, regexKeep):
         super().__init__()
         self._files = files
         self._prefix = prefix
         self._postfix = postfix
         self._replace = replace
         self._by = by
+        self._regexKeep = regexKeep
 
     def buildNewFileName(self, file, fileNumber):
-        newFileName = ""
+        newFileName = file.stem
+
+        if self._regexKeep:
+            keepResult = re.compile(self._regexKeep, re.VERBOSE).search(file.stem).group()
+            if keepResult:
+                newFileName = keepResult
 
         if self._prefix:
-            newFileName += self._prefix
-        #newFileName += file.stem + str(fileNumber)
-        newFileName += file.stem
+            newFileName = self._prefix + newFileName
+        # newFileName += file.stem + str(fileNumber)
 
         if self._replace:
             newFileName = newFileName.replace(self._replace, self._by)

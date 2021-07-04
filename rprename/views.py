@@ -48,6 +48,9 @@ class Window(QWidget, Ui_Window):
         self.txtBy.clear()
         self.txtBy.setEnabled(False)
 
+        self.txtRegexKeep.clear()
+        self.txtRegexKeep.setEnabled(False)
+
     def _connectSignalsSlots(self):
         self.loadFilesButton.clicked.connect(self.loadFiles)
         self.btnRename.clicked.connect(self.renameFiles)
@@ -55,9 +58,13 @@ class Window(QWidget, Ui_Window):
         self.txtPrefix.textChanged.connect(self._updateStateWhenReady)
         self.txtPostfix.textChanged.connect(self._updateStateWhenReady)
         self.txtReplace.textChanged.connect(self._updateStateWhenReady)
+        self.txtRegexKeep.textChanged.connect(self._updateStateWhenReady)
 
     def _updateStateWhenReady(self):
-        if self.txtPrefix.text() or self.txtPostfix.text() or self.txtReplace:
+        if self.txtPrefix.text() \
+                or self.txtPostfix.text() \
+                or self.txtReplace.text()\
+                or self.txtRegexKeep.text():
             self.btnRename.setEnabled(True)
         else:
             self.btnRename.setEnabled(False)
@@ -75,13 +82,15 @@ class Window(QWidget, Ui_Window):
         postfix = self.txtPostfix.text()
         replace = self.txtReplace.text()
         by = self.txtBy.text()
+        regexKeep = self.txtRegexKeep.text()
         self._thread = QThread()
         self._renamer = Renamer(
             files=tuple(self._files),
             prefix=prefix,
             postfix=postfix,
             replace=replace,
-            by=by
+            by=by,
+            regexKeep=regexKeep
         )
         self._renamer.moveToThread(self._thread)
         # Rename
@@ -133,3 +142,4 @@ class Window(QWidget, Ui_Window):
         self.txtPostfix.setEnabled(True)
         self.txtReplace.setEnabled(True)
         self.txtBy.setEnabled(True)
+        self.txtRegexKeep.setEnabled(True)
