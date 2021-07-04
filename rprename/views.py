@@ -30,12 +30,9 @@ class Window(QWidget, Ui_Window):
     def _setupUI(self):
         self.setupUi(self)
         self._updateStateWhenNoFiles()
+        self._clearAndDisabletxtBox()
 
-    def _updateStateWhenNoFiles(self):
-        self._filesCount = len(self._files)
-        self.loadFilesButton.setEnabled(True)
-        self.loadFilesButton.setFocus(True)
-        self.btnRename.setEnabled(False)
+    def _clearAndDisabletxtBox(self):
         self.txtPrefix.clear()
         self.txtPrefix.setEnabled(False)
 
@@ -51,9 +48,16 @@ class Window(QWidget, Ui_Window):
         self.txtRegexKeep.clear()
         self.txtRegexKeep.setEnabled(False)
 
+    def _updateStateWhenNoFiles(self):
+        self._filesCount = len(self._files)
+        self.loadFilesButton.setEnabled(True)
+        self.loadFilesButton.setFocus(True)
+        self.btnRename.setEnabled(False)
+
     def _connectSignalsSlots(self):
         self.loadFilesButton.clicked.connect(self.loadFiles)
         self.btnRename.clicked.connect(self.renameFiles)
+        self.btnClearCondition.clicked.connect(self._clearAndDisabletxtBox)
 
         self.txtPrefix.textChanged.connect(self._updateStateWhenReady)
         self.txtPostfix.textChanged.connect(self._updateStateWhenReady)
@@ -63,7 +67,7 @@ class Window(QWidget, Ui_Window):
     def _updateStateWhenReady(self):
         if self.txtPrefix.text() \
                 or self.txtPostfix.text() \
-                or self.txtReplace.text()\
+                or self.txtReplace.text() \
                 or self.txtRegexKeep.text():
             self.btnRename.setEnabled(True)
         else:
@@ -138,7 +142,7 @@ class Window(QWidget, Ui_Window):
 
     def _updateStateWhenFilesLoaded(self):
         self.txtPrefix.setEnabled(True)
-        #self.txtPrefix.setFocus(True)
+        # self.txtPrefix.setFocus(True)
         self.txtPostfix.setEnabled(True)
         self.txtReplace.setEnabled(True)
         self.txtBy.setEnabled(True)
