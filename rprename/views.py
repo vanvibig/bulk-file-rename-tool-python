@@ -35,7 +35,7 @@ class Window(QWidget, Ui_Window):
         self._filesCount = len(self._files)
         self.loadFilesButton.setEnabled(True)
         self.loadFilesButton.setFocus(True)
-        self.renameFilesButton.setEnabled(False)
+        self.btnRename.setEnabled(False)
         self.txtPrefix.clear()
         self.txtPrefix.setEnabled(False)
 
@@ -50,7 +50,7 @@ class Window(QWidget, Ui_Window):
 
     def _connectSignalsSlots(self):
         self.loadFilesButton.clicked.connect(self.loadFiles)
-        self.renameFilesButton.clicked.connect(self.renameFiles)
+        self.btnRename.clicked.connect(self.renameFiles)
 
         self.txtPrefix.textChanged.connect(self._updateStateWhenReady)
         self.txtPostfix.textChanged.connect(self._updateStateWhenReady)
@@ -58,9 +58,9 @@ class Window(QWidget, Ui_Window):
 
     def _updateStateWhenReady(self):
         if self.txtPrefix.text() or self.txtPostfix.text() or self.txtReplace:
-            self.renameFilesButton.setEnabled(True)
+            self.btnRename.setEnabled(True)
         else:
-            self.renameFilesButton.setEnabled(False)
+            self.btnRename.setEnabled(False)
 
     def renameFiles(self):
         self._runRenamerThread()
@@ -68,7 +68,7 @@ class Window(QWidget, Ui_Window):
 
     def _updateStateWhileRenaming(self):
         self.loadFilesButton.setEnabled(False)
-        self.renameFilesButton.setEnabled(False)
+        self.btnRename.setEnabled(False)
 
     def _runRenamerThread(self):
         prefix = self.txtPrefix.text()
