@@ -1,1 +1,2 @@
 pyuic5 -o window.py window.ui
+D:\Tools\Miniconda3\envs\python38\Library\bin\pyuic5.bat -o window.py window.ui

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'window.ui'
+# Form implementation generated from reading ui file 'untitled.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -205,16 +205,16 @@ class Ui_Window(object):
         self.gridLayout.addLayout(self.horizontalLayout, 0, 0, 1, 1)
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
-        self.txtRegexKeep_2 = QtWidgets.QLabel(Window)
-        self.txtRegexKeep_2.setMinimumSize(QtCore.QSize(150, 30))
-        self.txtRegexKeep_2.setMaximumSize(QtCore.QSize(16777215, 30))
+        self.lblRegexKeep = QtWidgets.QLabel(Window)
+        self.lblRegexKeep.setMinimumSize(QtCore.QSize(150, 30))
+        self.lblRegexKeep.setMaximumSize(QtCore.QSize(16777215, 30))
         font = QtGui.QFont()
         font.setPointSize(14)
         font.setBold(False)
         font.setWeight(50)
-        self.txtRegexKeep_2.setFont(font)
-        self.txtRegexKeep_2.setObjectName("txtRegexKeep_2")
-        self.horizontalLayout_2.addWidget(self.txtRegexKeep_2)
+        self.lblRegexKeep.setFont(font)
+        self.lblRegexKeep.setObjectName("lblRegexKeep")
+        self.horizontalLayout_2.addWidget(self.lblRegexKeep)
         self.txtRegexKeep = QtWidgets.QLineEdit(Window)
         self.txtRegexKeep.setMinimumSize(QtCore.QSize(222, 30))
         self.txtRegexKeep.setMaximumSize(QtCore.QSize(16777215, 30))
@@ -288,8 +288,8 @@ class Ui_Window(object):
         self.label_6.setText(_translate("Window", "Replace"))
         self.txtReplace.setPlaceholderText(_translate("Window", "replace"))
         self.label_10.setText(_translate("Window", "Regex Remove"))
-        self.txtRegexRemove.setPlaceholderText(_translate("Window", "remove"))
-        self.txtRegexKeep_2.setText(_translate("Window", "Regex Keep"))
+        self.txtRegexRemove.setPlaceholderText(_translate("Window", "not implement"))
+        self.lblRegexKeep.setText(_translate("Window", "Regex Keep"))
         self.txtRegexKeep.setPlaceholderText(_translate("Window", "keep"))
         self.label_11.setText(_translate("Window", "Append Degit"))
         self.txtAppeDegit.setPlaceholderText(_translate("Window", "not implement"))
